@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  role     String @default("student")
+
+  votes Vote[]
+}
+
+model Candidate {
+  id Int @id @default(autoincrement())
+
+  electionTitle String
+  teamName String
+
+  chairman String
+  viceChairman String
+
+  chairmanPhoto String?
+  vicePhoto String?
+
+  vision String
+  mission String
+
+  votes Vote[]
+}
+
+model Vote {
+  id Int @id @default(autoincrement())
+
+  userId Int @unique
+  candidateId Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  candidate Candidate @relation(fields: [candidateId], references: [id])
+}
